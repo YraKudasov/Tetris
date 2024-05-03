@@ -1,61 +1,70 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Figure {
-    private Glass glass;
+    protected Glass glass;
     private Cube[] cubes;
+
+    private List<Wall> walls = new ArrayList<>();
     private Cube boundingCube;
-    private char shape;
+    private int shape;
 
     private int turnPos;
 
     public Figure(Glass glass) {
         this.glass = glass;
         this.cubes = new Cube[4];
-        this.shape = getRandomShape();
         this.turnPos = 0;
         formFigure();
     }
 
 
 
-    private char getRandomShape() {
-        char[] shapes = {'I', 'J', 'L', 'O', 'S', 'T', 'Z'};
+    private int getRandomShape() {
+        int[] shapes = {0, 1};  // Indices of shapes
         Random random = new Random();
         return shapes[random.nextInt(shapes.length)];
     }
 
-    private void formFigure() {
+    public void formFigure() {
         int[][][] shapes = {
-                {{0, 0}, {-1, 0}, {1, 0}, {0, -1}},  // 'I'
-                {{0, 0}, {-1, 0}, {0, -1}, {1, -1}}, // 'J'
-                {{0, 0}, {-1, 0}, {0, -1}, {-1, -1}}, // 'L'
-                {{0, 0}, {-1, 0}, {1, 0}, {1, -1}, {-1, -1}}, // 'O'
-                {{0, 0}, {-1, 0}, {0, -1}, {1, -1}, {0, -2}}, // 'S'
-                {{0, 0}, {-1, 0}, {0, -1}, {1, -1}, {0, 1}}, // 'T'
-                {{0, 0}, {-1, 0}, {0, -1}, {1, -1}, {1, 0}} // 'Z'
+                {{2, 0}, {2, 0}, {1, 0}, {3, 0}, {2, 1}},  // 'T'
+                {{2, 2}, {2, 2}, {2, 0}, {2, 1}, {1, 2}}  // 'J'
         };
-        int[][] shapeCoords = shapes[shape - 'A'];  // Assuming 'A' corresponds to 'I', 'B' to 'J', and so on
-        for (int i = 0; i < 4; i++) {
+
+        int shapeIndex = getRandomShape();
+        int[][] shapeCoords = shapes[shapeIndex];
+        for (int i = 1; i < 5; i++) {
             int[] coords = shapeCoords[i];
             Cell cell = glass.getCell(coords[0], coords[1]);
-            cubes[i] = new Cube(cell, this);
+
+            cubes[i-1] = new Cube(cell, this);
         }
+
         boundingCube = cubes[0];
     }
 
-    public void fall() {
+
+    private boolean canMove(Direction direction){
+        int countCubes = 0;
         for (Cube cube : cubes) {
-            cube.move(Direction.South);
+            if(cube.canMove(direction)){
+                countCubes++;
+            }
         }
+        return countCubes == cubes.length;
     }
 
     public void move(Direction direction) {
-        for (Cube cube : cubes) {
-            cube.move(direction);
+        if(canMove(direction)){
+            for (Cube cube : cubes) {
+                cube.move(direction);
+            }
         }
     }
 
-    public void rotate() {
+  /*  public void rotate() {
         boundingCube.rotate(direction);
         for (Cube cube : cubes) {
             if (cube != boundingCube) {
@@ -63,11 +72,25 @@ public class Figure {
             }
         }
     }
+*/
 
-    public void pushDown() {
-        for (Cube cube : cubes) {
-            cube.pushDown();
-        }
+    // Метод для добавления стены к клетке
+    public void addWall(Wall wall) {
+        walls.add(wall);
+    }
+
+    // Метод для удаления стены из клетки
+    public void removeWall(Wall wall) {
+        walls.remove(wall);
+    }
+
+    // Метод для получения списка всех стен клетки
+    public List<Wall> getWalls() {
+        return walls;
+    }
+
+    public Cube[] getCubes() {
+        return cubes;
     }
 }
 

@@ -1,17 +1,49 @@
+import java.util.List;
+
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Glass glass = new Glass(5, 5); // Создание стакана размером 5x5
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
+        Figure figure = new Figure(glass);
+        figure.formFigure();
+
+        // Вывод координат фигуры
+        for (Cube cube : figure.getCubes()) {
+            Cell cell = cube.getOwnerCell();
+            System.out.println("Cell at (" + cell.getX() + ", " + cell.getY() + ")");
         }
+
+// Получение доступа к клеткам
+        List<List<Cell>> cells = glass.getAccessToCells();
+
+// Вывод координат каждой клетки построчно, начиная с первой строки
+        for (int y = 0; y < glass.getHeight(); y++) {
+            for (int x = 0; x < glass.getWidth(); x++) {
+                Cell cell = cells.get(y).get(x);
+                System.out.print("(" + cell.getX() + ", " + cell.getY() + ") ");
+            }
+            System.out.println(); // Переход на новую строку после окончания вывода координат одной строки
+        }
+
+        figure.move(Direction.West);
+
+        // Вывод координат фигуры после перемещения
+        for (Cube cube : figure.getCubes()) {
+            Cell cell = cube.getOwnerCell();
+            System.out.println("Cell at (" + cell.getX() + ", " + cell.getY() + ")");
+        }
+
+        System.out.println("\n");
+        figure.move(Direction.South);
+        // Вывод координат фигуры после перемещения
+        for (Cube cube : figure.getCubes()) {
+            Cell cell = cube.getOwnerCell();
+            System.out.println("Cell at (" + cell.getX() + ", " + cell.getY() + ")");
+        }
+
     }
 }
+

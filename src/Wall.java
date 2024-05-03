@@ -1,7 +1,14 @@
 public class Wall {
-    private Cell ownerCell;
 
-    public Wall(Cell ownerCell) {
-        this.ownerCell = ownerCell;
+    private Direction direction;
+
+
+    public Wall (Direction direction){
+        this.direction = direction;
+    }
+
+    // Метод для получения направления стены
+    public Direction getDirection() {
+        return direction;
     }
 }

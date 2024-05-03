@@ -24,16 +24,40 @@ public class Cell {
         cell.neighborCells.add(this);
     }
 
+    private boolean isWall(Direction direction) {
+        // Проверяем, есть ли уже стена в указанном направлении
+        for (Wall existingWall : walls) {
+            if (existingWall.getDirection().equals(direction)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public List<Wall> getWalls() {
         return this.walls;
     }
 
-    public void addWall(Wall wall) {
-        this.walls.add(wall);
+    public boolean addWall(Wall wall, Direction direction) {
+        // Проверяем, нет ли уже стены в указанном направлении
+        if (!isWall(direction)) {
+            this.walls.add(wall);
+            return true;
+        }
+        return false;
     }
 
-    public void removeWall(Wall wall) {
-        this.walls.remove(wall);
+    public boolean removeWall(Wall wall, Direction direction) {
+        // Перебираем все стены в массиве walls
+        for (Wall existingWall : walls) {
+            // Проверяем, совпадает ли направление стены с заданным направлением
+            if (existingWall.getDirection().equals(direction)) {
+                // Удаляем стену из массива walls
+                walls.remove(existingWall);
+                // Возвращаем, так как стена была найдена и удалена
+                return true;
+            }
+        }
+      return false;  // Если стена в заданном направлении не найдена, ничего не делаем
     }
 
     public Cube getCube() {

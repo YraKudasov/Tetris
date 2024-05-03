@@ -6,14 +6,14 @@ public class Glass {
     private int width;
     private List<List<Cell>> cells;
     private Figure figure;
-    private Stack stack;
+   // private Stack stack;
 
     public Glass(int height, int width) {
         this.height = height;
         this.width = width;
         cells = new ArrayList<>();
         figure = null;
-        stack = new Stack();
+    //    stack = new Stack();
         createGlass();
     }
 
@@ -27,7 +27,7 @@ public class Glass {
         }
     }
 
-    public List<Cell> getAccessToCells() {
+    public List<List<Cell>> getAccessToCells() {
         return cells;
     }
 
@@ -35,18 +35,19 @@ public class Glass {
         return figure;
     }
 
-    public Stack getStack() {
+   /* public Stack getStack() {
         return stack;
     }
-
+*/
     public void setFigure(Figure figure) {
         this.figure = figure;
     }
 
-    public void setHeap(Stack stack) {
+    /*
+    public void setStack(Stack stack) {
         this.stack = stack;
     }
-
+*/
     public Cell getCell(int x, int y) {
         // Проверяем, что координаты x и y находятся в пределах стекла
         if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -62,4 +63,11 @@ public class Glass {
         // Здесь должна быть логика для проверки переполнения стакана
     }
 
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
 }
