@@ -28,16 +28,17 @@ public class Main {
             System.out.println(); // Переход на новую строку после окончания вывода координат одной строки
         }
 
-        figure.move(Direction.West);
+        figure.move(Direction.South);
 
         // Вывод координат фигуры после перемещения
         for (Cube cube : figure.getCubes()) {
             Cell cell = cube.getOwnerCell();
-            System.out.println("Cell at (" + cell.getX() + ", " + cell.getY() + ")");
+            System.out.println("Cube at (" + cell.getX() + ", " + cell.getY() + ")");
         }
 
         System.out.println("\n");
-        figure.move(Direction.South);
+        figure.rotate();
+        figure.rotate();
         // Вывод координат фигуры после перемещения
         for (Cube cube : figure.getCubes()) {
             Cell cell = cube.getOwnerCell();

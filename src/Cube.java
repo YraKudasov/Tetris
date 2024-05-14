@@ -109,7 +109,27 @@ public class Cube {
         }
     }
 
-    public void rotate(Direction direction) {
+    public boolean canRotate(int boundingX, int boundingY){
+        if (isMovable()) {
+            // Получаем ячейку, которая находится на одну позицию ниже текущей
+            Cell nextCell = ownerFigure.glass.getCell(boundingX - ownerCell.getY() + boundingY, boundingY + ownerCell.getX() - boundingX);
+            // Проверяем, что следующая ячейка пуста
+            if (nextCell != null && (!nextCell.hasCube() || nextCell.getCube().getOwnerFigure() == this.getOwnerFigure())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void rotate(int boundingX, int boundingY) {
+        // Получаем ячейку, которая находится на одну позицию ниже текущей
+        Cell nextCell = ownerFigure.glass.getCell(boundingX - ownerCell.getY() + boundingY, boundingY + ownerCell.getX() - boundingX);
+        // Перемещаем куб в следующую ячейку
+        nextCell.addCube(this);
+        // Удаляем куб из текущей ячейки
+        ownerCell.removeCube();
+        // Обновляем ссылку на текущую ячейку
+        ownerCell = nextCell;
 
     }
 
