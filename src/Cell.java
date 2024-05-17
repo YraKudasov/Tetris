@@ -16,7 +16,7 @@ public class Cell {
         this.neighborCells = new ArrayList<>();
         this.ownerTetris = null;
         this.walls = new ArrayList<>();
-        this.cube = null;
+        cube = null;
     }
 
     public void setNeighbor(Cell cell) {

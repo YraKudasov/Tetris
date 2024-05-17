@@ -8,42 +8,45 @@ public class Main {
 
 
         Figure figure = new Figure(glass);
-        figure.formFigure();
+        glass.setFigure(figure);
+
 
         // Вывод координат фигуры
         for (Cube cube : figure.getCubes()) {
-            Cell cell = cube.getOwnerCell();
-            System.out.println("Cell at (" + cell.getX() + ", " + cell.getY() + ")");
+            System.out.println("Cell at (" + cube.getCoordX() + ", " + cube.getCoordY() + ")");
         }
 
-// Получение доступа к клеткам
-        List<List<Cell>> cells = glass.getAccessToCells();
 
 // Вывод координат каждой клетки построчно, начиная с первой строки
         for (int y = 0; y < glass.getHeight(); y++) {
             for (int x = 0; x < glass.getWidth(); x++) {
-                Cell cell = cells.get(y).get(x);
-                System.out.print("(" + cell.getX() + ", " + cell.getY() + ") ");
+                System.out.print("(" + glass.getCell(x,y).getX() + ", " + glass.getCell(x,y).getY() + ") ");
+                if (glass.getCell(x,y).hasCube()) {
+                    System.out.print(" да ");
+                } else {
+                    System.out.print(" нет ");
+                }
             }
             System.out.println(); // Переход на новую строку после окончания вывода координат одной строки
         }
 
         figure.move(Direction.South);
-
-        // Вывод координат фигуры после перемещения
-        for (Cube cube : figure.getCubes()) {
-            Cell cell = cube.getOwnerCell();
-            System.out.println("Cube at (" + cell.getX() + ", " + cell.getY() + ")");
-        }
+        figure.rotate();
 
         System.out.println("\n");
-        figure.rotate();
-        figure.rotate();
-        // Вывод координат фигуры после перемещения
-        for (Cube cube : figure.getCubes()) {
-            Cell cell = cube.getOwnerCell();
-            System.out.println("Cell at (" + cell.getX() + ", " + cell.getY() + ")");
+
+        for (int y = 0; y < glass.getHeight(); y++) {
+            for (int x = 0; x < glass.getWidth(); x++) {
+                System.out.print("(" + glass.getCell(x,y).getX() + ", " + glass.getCell(x,y).getY() + ") ");
+                if (glass.getCell(x,y).hasCube()) {
+                    System.out.print(" да ");
+                } else {
+                    System.out.print(" нет ");
+                }
+            }
+            System.out.println(); // Переход на новую строку после окончания вывода координат одной строки
         }
+
 
     }
 }

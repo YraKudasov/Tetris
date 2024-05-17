@@ -21,9 +21,25 @@ public class Glass {
         for (int y = 0; y < height; y++) {
             List<Cell> row = new ArrayList<>();
             for (int x = 0; x < width; x++) {
-                row.add(new Cell(x, y));
+                Cell cell = new Cell(x, y);
+                System.out.print("(" + cell.getX() + ", " + cell.getY() + ") ");
+
+                // Добавляем стену справа для каждого элемента в верхнем ряду
+                if (x == 0) {
+                    cell.addWall(new Wall(Direction.East), Direction.East);
+                }
+                // Добавляем стену снизу для каждого элемента в правом ряду
+                if (x == width - 1) {
+                    cell.addWall(new Wall(Direction.West), Direction.West);
+                }
+                // Добавляем стену справа для каждого элемента в нижнем ряду
+                if (y == height - 1) {
+                    cell.addWall(new Wall(Direction.South), Direction.South);
+                }
+                row.add(cell);
             }
             cells.add(row);
+            System.out.println();
         }
     }
 
@@ -39,9 +55,14 @@ public class Glass {
         return stack;
     }
 */
-    public void setFigure(Figure figure) {
-        this.figure = figure;
-    }
+   public void setFigure(Figure figure) {
+       this.figure = figure;
+       for (int i = 0; i < 4; i++) {
+           Cell cell = getCell(figure.getCube(i).getCoordX(), figure.getCube(i).getCoordY());
+           // Добавляем куб в клетку
+           cell.addCube(figure.getCube(i));
+       }
+   }
 
     /*
     public void setStack(Stack stack) {
@@ -53,7 +74,7 @@ public class Glass {
         if (x < 0 || x >= width || y < 0 || y >= height) {
             return null; // Возвращаем null, если координаты вне стекла
         }
-        return new Cell(x, y); // Возвращаем ячейку с заданными координатами
+        return cells.get(y).get(x);
     }
     public void getInformationAboutStateOfRows() {
         // Здесь должна быть логика для определения состояния рядов

@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Figure {
     protected Glass glass;
@@ -13,44 +11,43 @@ public class Figure {
     private int turnPos;
 
     public Figure(Glass glass) {
-        this.glass = glass;
         this.cubes = new Cube[4];
+        this.glass = glass;
         this.turnPos = 0;
         formFigure();
     }
 
 
     private int getRandomShape() {
-        int[] shapes = {0, 1};  // Indices of shapes
+        int[] shapes = {1};  // Indices of shapes
         Random random = new Random();
         return shapes[random.nextInt(shapes.length)];
     }
 
     public void formFigure() {
         int[][][] shapes = {
-                {{2, 0}, {2, 0}, {1, 0}, {3, 0}, {2, 1}},  // 'T'
-                {{2, 2}, {2, 2}, {2, 0}, {2, 1}, {1, 2}}  // 'J'
+                {{2, 0}, {2, 1}, {1, 0}, {2, 0}, {3, 0}},  // 'T'
+                {{2, 2}, {1, 2}, {2, 0}, {2, 1}, {2, 2}}, // 'J'
+                {{1, 0}, {1, 1}, {2, 1}, {1, 0}, {2, 0}}  // 'O'
         };
 
         int shapeIndex = getRandomShape();
         int[][] shapeCoords = shapes[shapeIndex];
         for (int i = 1; i < 5; i++) {
             int[] coords = shapeCoords[i];
-            Cell cell = glass.getCell(coords[0], coords[1]);
-            if (cell == null || cell.hasCube()) {
-                throw new IllegalArgumentException("Cell with coordinates " + coords[0] + ", " + coords[1] + " does not exist or has cube.");
-            }
-            cubes[i - 1] = new Cube(cell, this);
+            cubes[i - 1] = new Cube( coords[0], coords[1], this);
         }
 
-        boundingCube = cubes[0];
+        int[] boundingCoords = shapeCoords[0];
+        boundingCube = new Cube(boundingCoords[0], boundingCoords[1], this);
     }
 
 
     private boolean canMove(Direction direction) {
         int countCubes = 0;
-        for (Cube cube : cubes) {
-            if (cube.canMove(direction)) {
+        for (int i = 0; i < cubes.length; i++) {
+            Cube cube = cubes[i];
+            if (cube.canMove(direction, i)) {
                 countCubes++;
             }
         }
@@ -59,32 +56,68 @@ public class Figure {
 
     public void move(Direction direction) {
         if (canMove(direction)) {
-            for (Cube cube : cubes) {
-                cube.move(direction);
+            if (direction == Direction.West) {
+                Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()).reversed());
+                for (int i = 0; i < cubes.length; i++) {
+                    Cube cube = cubes[i];
+                    cube.move(direction, i);
+                }
+                boundingCube.setCoordX(boundingCube.getCoordX() + 1);
+            }
+            else if (direction == Direction.East) {
+                Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()));
+                for (int i = 0; i < cubes.length; i++) {
+                    Cube cube = cubes[i];
+                    cube.move(direction, i);
+                }
+                boundingCube.setCoordX(boundingCube.getCoordX() - 1);
+            }
+            else if (direction == Direction.South) {
+                Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordY()).reversed());
+                for (int i = 0; i < cubes.length; i++) {
+                    Cube cube = cubes[i];
+                    cube.move(direction, i);
+                }
+                boundingCube.setCoordY(boundingCube.getCoordY() + 1);
             }
         }
-    }
 
-    private boolean canRotate() {
+        }
+
+
+    private boolean canRotate(int[] waitingCubes) {
         int countCubes = 0;
-        for (Cube cube : cubes) {
-            if (cube != boundingCube) {
-                if (cube.canRotate(boundingCube.getOwnerCell().getX(), boundingCube.getOwnerCell().getY())) {
+        for (int i = 0; i < cubes.length; i++) {
+            Cube cube = cubes[i];
+            if (cube.getCoordX() != boundingCube.getCoordX() || cube.getCoordY() != boundingCube.getCoordY()) {
+                if (cube.canRotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i, waitingCubes)) {
                     countCubes++;
                 }
             }
         }
-        if (countCubes != cubes.length-1){
-            throw new IllegalArgumentException("Cell can't rotate");
+        if (countCubes != cubes.length-1) {
+            System.out.println();
+            System.out.print(countCubes);
+            System.out.println();
+            throw new IllegalArgumentException("Figure can't rotate");
         }
         return countCubes == cubes.length-1;
     }
 
     public void rotate() {
-        if (canRotate()) {
-            for (Cube cube : cubes){
-                if (cube != boundingCube){
-                    cube.rotate(boundingCube.getOwnerCell().getX(), boundingCube.getOwnerCell().getY());
+        int[] waitingCubes = new int[cubes.length];
+        Arrays.fill(waitingCubes, 25);
+        if (canRotate(waitingCubes)) {
+            for (int i = 0; i < cubes.length; i++){
+                Cube cube = cubes[i];
+                if ((cube.getCoordX() != boundingCube.getCoordX() || cube.getCoordY() != boundingCube.getCoordY()) && i != waitingCubes[i]){
+                    cube.rotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i);
+                }
+            }
+            for (int i = 0; i < waitingCubes.length; i++){
+                Cube cube = cubes[i];
+                if(waitingCubes[i] != 25){
+                    cube.rotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i);
                 }
             }
         }
@@ -108,6 +141,15 @@ public class Figure {
 
     public Cube[] getCubes() {
         return cubes;
+    }
+
+    public Cube getCube(int index) {
+        // Проверяем, что индекс находится в пределах массива кубов
+        if (index < 0 || index >= cubes.length) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+        // Возвращаем куб по заданному индексу
+        return cubes[index];
     }
 }
 
