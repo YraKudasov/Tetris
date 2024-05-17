@@ -84,6 +84,12 @@ public class Glass {
         // Здесь должна быть логика для проверки переполнения стакана
     }
 
+    public void deleteFigure() {
+        // Выполните все необходимые операции с объектом figure
+
+        figure = null; // Удалите ссылку на объект figure
+    }
+
     public int getHeight() {
         return height;
     }

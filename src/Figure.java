@@ -6,48 +6,21 @@ public class Figure {
 
     private List<Wall> walls = new ArrayList<>();
     private Cube boundingCube;
-    private int shape;
 
-    private int turnPos;
 
-    public Figure(Glass glass) {
-        this.cubes = new Cube[4];
+    public Figure(Glass glass, Cube[] cubes, Cube boundingCube) {
+        this.cubes = cubes;
         this.glass = glass;
-        this.turnPos = 0;
-        formFigure();
+        this.boundingCube = boundingCube;
     }
 
-
-    private int getRandomShape() {
-        int[] shapes = {1};  // Indices of shapes
-        Random random = new Random();
-        return shapes[random.nextInt(shapes.length)];
-    }
-
-    public void formFigure() {
-        int[][][] shapes = {
-                {{2, 0}, {2, 1}, {1, 0}, {2, 0}, {3, 0}},  // 'T'
-                {{2, 2}, {1, 2}, {2, 0}, {2, 1}, {2, 2}}, // 'J'
-                {{1, 0}, {1, 1}, {2, 1}, {1, 0}, {2, 0}}  // 'O'
-        };
-
-        int shapeIndex = getRandomShape();
-        int[][] shapeCoords = shapes[shapeIndex];
-        for (int i = 1; i < 5; i++) {
-            int[] coords = shapeCoords[i];
-            cubes[i - 1] = new Cube( coords[0], coords[1], this);
-        }
-
-        int[] boundingCoords = shapeCoords[0];
-        boundingCube = new Cube(boundingCoords[0], boundingCoords[1], this);
-    }
 
 
     private boolean canMove(Direction direction) {
         int countCubes = 0;
         for (int i = 0; i < cubes.length; i++) {
             Cube cube = cubes[i];
-            if (cube.canMove(direction, i)) {
+            if (cube.canMove(direction, glass)) {
                 countCubes++;
             }
         }
@@ -60,7 +33,7 @@ public class Figure {
                 Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()).reversed());
                 for (int i = 0; i < cubes.length; i++) {
                     Cube cube = cubes[i];
-                    cube.move(direction, i);
+                    cube.move(direction, i, glass);
                 }
                 boundingCube.setCoordX(boundingCube.getCoordX() + 1);
             }
@@ -68,7 +41,7 @@ public class Figure {
                 Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()));
                 for (int i = 0; i < cubes.length; i++) {
                     Cube cube = cubes[i];
-                    cube.move(direction, i);
+                    cube.move(direction, i, glass);
                 }
                 boundingCube.setCoordX(boundingCube.getCoordX() - 1);
             }
@@ -76,7 +49,7 @@ public class Figure {
                 Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordY()).reversed());
                 for (int i = 0; i < cubes.length; i++) {
                     Cube cube = cubes[i];
-                    cube.move(direction, i);
+                    cube.move(direction, i, glass);
                 }
                 boundingCube.setCoordY(boundingCube.getCoordY() + 1);
             }
@@ -90,15 +63,12 @@ public class Figure {
         for (int i = 0; i < cubes.length; i++) {
             Cube cube = cubes[i];
             if (cube.getCoordX() != boundingCube.getCoordX() || cube.getCoordY() != boundingCube.getCoordY()) {
-                if (cube.canRotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i, waitingCubes)) {
+                if (cube.canRotate(boundingCube.getCoordX(), boundingCube.getCoordY(),  glass, waitingCubes, i)) {
                     countCubes++;
                 }
             }
         }
         if (countCubes != cubes.length-1) {
-            System.out.println();
-            System.out.print(countCubes);
-            System.out.println();
             throw new IllegalArgumentException("Figure can't rotate");
         }
         return countCubes == cubes.length-1;
@@ -111,17 +81,19 @@ public class Figure {
             for (int i = 0; i < cubes.length; i++){
                 Cube cube = cubes[i];
                 if ((cube.getCoordX() != boundingCube.getCoordX() || cube.getCoordY() != boundingCube.getCoordY()) && i != waitingCubes[i]){
-                    cube.rotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i);
+                    cube.rotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i, glass);
                 }
             }
             for (int i = 0; i < waitingCubes.length; i++){
                 Cube cube = cubes[i];
                 if(waitingCubes[i] != 25){
-                    cube.rotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i);
+                    cube.rotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i, glass);
                 }
             }
         }
     }
+
+
 
 
     // Метод для добавления стены к клетке

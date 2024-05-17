@@ -6,8 +6,9 @@ public class Main {
     public static void main(String[] args) {
         Glass glass = new Glass(5, 5); // Создание стакана размером 5x5
 
+        FactoryFigures factory = new FactoryFigures(glass);
 
-        Figure figure = new Figure(glass);
+        Figure figure = factory.createRandomFigure();
         glass.setFigure(figure);
 
 
@@ -31,8 +32,6 @@ public class Main {
         }
 
         figure.move(Direction.South);
-        figure.rotate();
-
         System.out.println("\n");
 
         for (int y = 0; y < glass.getHeight(); y++) {
