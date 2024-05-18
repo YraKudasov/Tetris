@@ -32,6 +32,7 @@ public class Main {
         }
 
         figure.move(Direction.South);
+        figure.rotate();
         System.out.println("\n");
 
         for (int y = 0; y < glass.getHeight(); y++) {

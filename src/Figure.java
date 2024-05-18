@@ -1,10 +1,8 @@
 import java.util.*;
 
-public class Figure {
+public class Figure implements canMoveAndRotate {
     protected Glass glass;
     private Cube[] cubes;
-
-    private List<Wall> walls = new ArrayList<>();
     private Cube boundingCube;
 
 
@@ -15,8 +13,8 @@ public class Figure {
     }
 
 
-
-    private boolean canMove(Direction direction) {
+    @Override
+    public boolean canMove(Direction direction) {
         int countCubes = 0;
         for (int i = 0; i < cubes.length; i++) {
             Cube cube = cubes[i];
@@ -27,6 +25,7 @@ public class Figure {
         return countCubes == cubes.length;
     }
 
+    @Override
     public void move(Direction direction) {
         if (canMove(direction)) {
             if (direction == Direction.West) {
@@ -57,8 +56,8 @@ public class Figure {
 
         }
 
-
-    private boolean canRotate(int[] waitingCubes) {
+    @Override
+    public boolean canRotate(int[] waitingCubes) {
         int countCubes = 0;
         for (int i = 0; i < cubes.length; i++) {
             Cube cube = cubes[i];
@@ -73,7 +72,7 @@ public class Figure {
         }
         return countCubes == cubes.length-1;
     }
-
+    @Override
     public void rotate() {
         int[] waitingCubes = new int[cubes.length];
         Arrays.fill(waitingCubes, 25);
@@ -95,21 +94,6 @@ public class Figure {
 
 
 
-
-    // Метод для добавления стены к клетке
-    public void addWall(Wall wall) {
-        walls.add(wall);
-    }
-
-    // Метод для удаления стены из клетки
-    public void removeWall(Wall wall) {
-        walls.remove(wall);
-    }
-
-    // Метод для получения списка всех стен клетки
-    public List<Wall> getWalls() {
-        return walls;
-    }
 
     public Cube[] getCubes() {
         return cubes;
