@@ -1,4 +1,7 @@
 import java.util.*;
+import events.FigureActionEvent;
+import events.FigureActionListener;
+import java.util.ArrayList;
 
 public class Figure implements canMoveAndRotate {
     protected Glass glass;
@@ -6,11 +9,14 @@ public class Figure implements canMoveAndRotate {
     private Cube boundingCube;
 
 
+
+
     public Figure(Glass glass, Cube[] cubes, Cube boundingCube) {
         this.cubes = cubes;
         this.glass = glass;
         this.boundingCube = boundingCube;
     }
+
 
 
     @Override
@@ -27,24 +33,11 @@ public class Figure implements canMoveAndRotate {
 
     @Override
     public void move(Direction direction) {
-        if (canMove(direction)) {
-            if (direction == Direction.West) {
-                Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()).reversed());
-                for (int i = 0; i < cubes.length; i++) {
-                    Cube cube = cubes[i];
-                    cube.move(direction, i, glass);
-                }
-                boundingCube.setCoordX(boundingCube.getCoordX() + 1);
+        if (direction == Direction.South) {
+            if (!canMove(direction)) {
+                fireFigureAction();
             }
-            else if (direction == Direction.East) {
-                Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()));
-                for (int i = 0; i < cubes.length; i++) {
-                    Cube cube = cubes[i];
-                    cube.move(direction, i, glass);
-                }
-                boundingCube.setCoordX(boundingCube.getCoordX() - 1);
-            }
-            else if (direction == Direction.South) {
+            else if (canMove(direction)){
                 Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordY()).reversed());
                 for (int i = 0; i < cubes.length; i++) {
                     Cube cube = cubes[i];
@@ -52,9 +45,27 @@ public class Figure implements canMoveAndRotate {
                 }
                 boundingCube.setCoordY(boundingCube.getCoordY() + 1);
             }
+        } else {
+            if (canMove(direction)) {
+                if (direction == Direction.West) {
+                    Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()).reversed());
+                    for (int i = 0; i < cubes.length; i++) {
+                        Cube cube = cubes[i];
+                        cube.move(direction, i, glass);
+                    }
+                    boundingCube.setCoordX(boundingCube.getCoordX() + 1);
+                } else if (direction == Direction.East) {
+                    Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()));
+                    for (int i = 0; i < cubes.length; i++) {
+                        Cube cube = cubes[i];
+                        cube.move(direction, i, glass);
+                    }
+                    boundingCube.setCoordX(boundingCube.getCoordX() - 1);
+                }
+            }
         }
+    }
 
-        }
 
     @Override
     public boolean canRotate(int[] waitingCubes) {
@@ -62,37 +73,36 @@ public class Figure implements canMoveAndRotate {
         for (int i = 0; i < cubes.length; i++) {
             Cube cube = cubes[i];
             if (cube.getCoordX() != boundingCube.getCoordX() || cube.getCoordY() != boundingCube.getCoordY()) {
-                if (cube.canRotate(boundingCube.getCoordX(), boundingCube.getCoordY(),  glass, waitingCubes, i)) {
+                if (cube.canRotate(boundingCube.getCoordX(), boundingCube.getCoordY(), glass, waitingCubes, i)) {
                     countCubes++;
                 }
             }
         }
-        if (countCubes != cubes.length-1) {
+        if (countCubes != cubes.length - 1) {
             throw new IllegalArgumentException("Figure can't rotate");
         }
-        return countCubes == cubes.length-1;
+        return countCubes == cubes.length - 1;
     }
+
     @Override
     public void rotate() {
         int[] waitingCubes = new int[cubes.length];
         Arrays.fill(waitingCubes, 25);
         if (canRotate(waitingCubes)) {
-            for (int i = 0; i < cubes.length; i++){
+            for (int i = 0; i < cubes.length; i++) {
                 Cube cube = cubes[i];
-                if ((cube.getCoordX() != boundingCube.getCoordX() || cube.getCoordY() != boundingCube.getCoordY()) && i != waitingCubes[i]){
+                if ((cube.getCoordX() != boundingCube.getCoordX() || cube.getCoordY() != boundingCube.getCoordY()) && i != waitingCubes[i]) {
                     cube.rotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i, glass);
                 }
             }
-            for (int i = 0; i < waitingCubes.length; i++){
+            for (int i = 0; i < waitingCubes.length; i++) {
                 Cube cube = cubes[i];
-                if(waitingCubes[i] != 25){
+                if (waitingCubes[i] != 25) {
                     cube.rotate(boundingCube.getCoordX(), boundingCube.getCoordY(), i, glass);
                 }
             }
         }
     }
-
-
 
 
     public Cube[] getCubes() {
@@ -106,6 +116,27 @@ public class Figure implements canMoveAndRotate {
         }
         // Возвращаем куб по заданному индексу
         return cubes[index];
+    }
+
+    //-----------------------------------------------Event----------------------------
+    ArrayList<FigureActionListener> _listeners = new ArrayList<>();
+
+    // ������������ ���������
+    public void addFigureActionListener(FigureActionListener l) {
+        _listeners.add(l);
+    }
+
+    // ����������� ���������
+    public void removeFigureActionListener(FigureActionListener l) {
+        _listeners.remove(l);
+    }
+
+
+    protected void fireFigureAction() {
+        FigureActionEvent e = new FigureActionEvent(this);
+        for (FigureActionListener l : _listeners) {
+            l.onFigureFell(e);
+        }
     }
 }
 

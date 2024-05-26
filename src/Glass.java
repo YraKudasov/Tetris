@@ -1,11 +1,13 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Glass {
+public class Glass  {
     private int height;
     private int width;
     private List<List<Cell>> cells;
     private Figure figure;
+
+    private Heap heap;
    // private Stack stack;
 
     public Glass(int height, int width) {
@@ -13,7 +15,7 @@ public class Glass {
         this.width = width;
         cells = new ArrayList<>();
         figure = null;
-    //    stack = new Stack();
+        heap = new Heap();
         createGlass();
     }
 
@@ -51,10 +53,9 @@ public class Glass {
         return figure;
     }
 
-   /* public Stack getStack() {
-        return stack;
-    }
-*/
+    public Heap getHeap() { return heap;}
+
+
    public void setFigure(Figure figure) {
        this.figure = figure;
        for (int i = 0; i < 4; i++) {
@@ -64,11 +65,11 @@ public class Glass {
        }
    }
 
-    /*
-    public void setStack(Stack stack) {
-        this.stack = stack;
+
+    public void setStack(Heap heap) {
+        this.heap = heap;
     }
-*/
+
     public Cell getCell(int x, int y) {
         // Проверяем, что координаты x и y находятся в пределах стекла
         if (x < 0 || x >= width || y < 0 || y >= height) {
@@ -76,12 +77,42 @@ public class Glass {
         }
         return cells.get(y).get(x);
     }
-    public void getInformationAboutStateOfRows() {
-        // Здесь должна быть логика для определения состояния рядов
+
+    public boolean isRowFull(int rowIndex) {
+        for (int x = 0; x < getWidth(); x++) {
+            Cell cell = getCell(x, rowIndex);
+            if (cell == null || !cell.hasCube()) {
+                return false; // Если хотя бы одна клетка в ряду пуста, возвращаем false
+            }
+        }
+        return true; // Если все клетки в ряду заполнены, возвращаем true
     }
 
-    public void checkOwnOverflow() {
-        // Здесь должна быть логика для проверки переполнения стакана
+    public int[] getFilledRows() {
+        List<Integer> filledRows = new ArrayList<>();
+        for (int y = 0; y < getHeight(); y++) {
+            if (isRowFull(y)) {
+                filledRows.add(y);
+            }
+        }
+        int[] filledRowsArray = new int[filledRows.size()];
+        for (int i = 0; i < filledRows.size(); i++) {
+            filledRowsArray[i] = filledRows.get(i);
+        }
+        return filledRowsArray;
+    }
+
+    public boolean isOverflow() {
+        // Проходимся по всем клеткам второго ряда
+        for (int y = 2; y < getHeight(); y++) { // Height - высота стакана
+            for (int x = 0; x < getWidth(); x++) { // Width - ширина стакана
+                Cell cell = getCell(x, y); // Получаем клетку по координатам x и y
+                if (cell != null && cell.hasCube()) { // Проверяем, есть ли в клетке кубик
+                    return true; // Если есть, возвращаем true, что означает переполнение
+                }
+            }
+        }
+        return false; // Если ни в одной клетке второго ряда кубиков нет, возвращаем false
     }
 
     public void deleteFigure() {
@@ -97,4 +128,6 @@ public class Glass {
     public int getWidth() {
         return width;
     }
+
+
 }

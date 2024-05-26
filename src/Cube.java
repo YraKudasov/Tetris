@@ -14,11 +14,6 @@ public class Cube {
 
 
 
-
-
-
-
-
     public boolean isMovable() {
         return this.movable;
     }
