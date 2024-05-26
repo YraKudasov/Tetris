@@ -9,8 +9,6 @@ public class Figure implements canMoveAndRotate {
     private Cube boundingCube;
 
 
-
-
     public Figure(Glass glass, Cube[] cubes, Cube boundingCube) {
         this.cubes = cubes;
         this.glass = glass;
@@ -37,7 +35,7 @@ public class Figure implements canMoveAndRotate {
             if (!canMove(direction)) {
                 fireFigureAction();
             }
-            else if (canMove(direction)){
+            else{
                 Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordY()).reversed());
                 for (int i = 0; i < cubes.length; i++) {
                     Cube cube = cubes[i];
@@ -103,11 +101,10 @@ public class Figure implements canMoveAndRotate {
             }
         }
     }
-
-
     public Cube[] getCubes() {
         return cubes;
     }
+
 
     public Cube getCube(int index) {
         // Проверяем, что индекс находится в пределах массива кубов

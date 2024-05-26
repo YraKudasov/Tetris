@@ -3,6 +3,7 @@ import events.FigureActionListener;
 
 import java.util.List;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameModel {
 
@@ -14,17 +15,15 @@ public class GameModel {
     private int score;
 
     public GameModel() {
-        this.glass = new Glass(5, 5);
+        this.glass = new Glass(10, 5);
         this.factoryFigures = new FactoryFigures(glass);
         this.score = 0;
     }
 
 
-    public void start(){
-        while (!isGameOver()) {
-            initiateFigureGeneration();
-            glass.getFigure().addFigureActionListener(new FigureObserver());
-        }
+    public void start() {
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new FallingFigureTask(), 0, 1000);
     }
 
 
@@ -34,13 +33,14 @@ public class GameModel {
         glass.setFigure(figure);
     }
 
-    public void addFigureToHeap(){
-       Figure figure = glass.getFigure();
-       Heap heap = glass.getHeap();
+    public void addFigureToHeap() {
+        Figure figure = glass.getFigure();
+        Heap heap = glass.getHeap();
 
         // Добавляем кубики из фигуры в кучу
         Cube[] cubes = figure.getCubes();
         for (Cube cube : cubes) {
+            cube.setMovable(false);
             heap.addCube(cube);
         }
 
@@ -54,20 +54,11 @@ public class GameModel {
         score += points;
     }
 
-    public void figureFell(Figure figure, Heap heap) {
-        Cube[] fellCubes = figure.getCubes();
-        for (Cube cube : fellCubes) {
-            cube.setMovable(false); // Set the movable property to false
-            heap.addCube(cube);// Add the cube to the Stack object
-        }
-        glass.deleteFigure();
+
+    public boolean isGameOver() {
+        // Определяем окончание игры
+        return glass.isOverflow();
     }
-
-
-        public boolean isGameOver() {
-            // Определяем окончание игры
-            return glass.isOverflow();
-        }
 
 
     // Геттеры и сеттеры для доступа к свойствам
@@ -84,25 +75,49 @@ public class GameModel {
     }
 
 
+    // Класс, который будет вызываться каждую секунду
+    private class FallingFigureTask extends TimerTask {
+        @Override
+        public void run() {
+            Figure figure = glass.getFigure();
+            if (figure != null) {
+                figure.move(Direction.South);
+            } else {
+                // Фигура упала или отсутствует, останавливаем таймер и генерируем новую фигуру
+                timer.cancel(); // Останавливаем таймер
+                if (isGameOver()) {
+                    // Если стакан переполнен, завершаем игру
+                    System.out.println("Игра окончена, стакан переполнен!");
+                    // Здесь можно добавить код для завершения игры
+                } else {
+                    initiateFigureGeneration(); // Генерируем новую фигуру
+                    glass.getFigure().addFigureActionListener(new FigureObserver());
+                    timer = new Timer(); // Создаем новый таймер
+                    timer.scheduleAtFixedRate(new FallingFigureTask(), 0, 1000); // Запускаем таймер снова
+                }
+            }
 
 
+        }
+
+    }
 
     private class FigureObserver implements FigureActionListener {
-
 
         @Override
         public void onFigureFell(FigureActionEvent e) {
             addFigureToHeap();
-            if(!isGameOver()){
+            if (!isGameOver()) {
                 updateScore(200);
                 glass.getHeap().burnRow(glass.getFilledRows());
-            }
-            else {
-                System.out.print("Игра окончена \n Счёт:" + getScore());
+                System.out.print("Фигура упала \n");
+            } else {
+                System.out.print("Игра окончна\n Счет:" + getScore());
             }
         }
 
     }
+
 
 }
 

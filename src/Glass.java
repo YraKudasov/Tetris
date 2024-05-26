@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Glass  {
+public class Glass {
     private int height;
     private int width;
     private List<List<Cell>> cells;
     private Figure figure;
 
     private Heap heap;
-   // private Stack stack;
+    // private Stack stack;
 
     public Glass(int height, int width) {
         this.height = height;
@@ -53,17 +53,21 @@ public class Glass  {
         return figure;
     }
 
-    public Heap getHeap() { return heap;}
+    public Heap getHeap() {
+        return heap;
+    }
 
 
-   public void setFigure(Figure figure) {
-       this.figure = figure;
-       for (int i = 0; i < 4; i++) {
-           Cell cell = getCell(figure.getCube(i).getCoordX(), figure.getCube(i).getCoordY());
-           // Добавляем куб в клетку
-           cell.addCube(figure.getCube(i));
-       }
-   }
+    public void setFigure(Figure figure) {
+        this.figure = figure;
+        for (int i = 0; i < 4; i++) {
+            Cell cell = getCell(figure.getCube(i).getCoordX(), figure.getCube(i).getCoordY());
+            // Добавляем куб в клетку
+            cell.addCube(figure.getCube(i));
+            System.out.print("(" + cell.getX() + ", " + cell.getY() + ") ");
+        }
+        System.out.println();
+    }
 
 
     public void setStack(Heap heap) {
@@ -104,13 +108,14 @@ public class Glass  {
 
     public boolean isOverflow() {
         // Проходимся по всем клеткам второго ряда
-        for (int y = 2; y < getHeight(); y++) { // Height - высота стакана
-            for (int x = 0; x < getWidth(); x++) { // Width - ширина стакана
-                Cell cell = getCell(x, y); // Получаем клетку по координатам x и y
-                if (cell != null && cell.hasCube()) { // Проверяем, есть ли в клетке кубик
-                    return true; // Если есть, возвращаем true, что означает переполнение
-                }
+        // Height - высота стакана
+        int y = 2;
+        for (int x = 0; x < getWidth(); x++) { // Width - ширина стакана
+            Cell cell = getCell(x, y); // Получаем клетку по координатам x и y
+            if (cell != null && cell.hasCube()) { // Проверяем, есть ли в клетке кубик
+                return true; // Если есть, возвращаем true, что означает переполнение
             }
+
         }
         return false; // Если ни в одной клетке второго ряда кубиков нет, возвращаем false
     }
