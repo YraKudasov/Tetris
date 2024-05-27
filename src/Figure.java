@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.*;
 import events.FigureActionEvent;
 import events.FigureActionListener;
@@ -8,11 +9,14 @@ public class Figure implements canMoveAndRotate {
     private Cube[] cubes;
     private Cube boundingCube;
 
+    private Color color;
 
-    public Figure(Glass glass, Cube[] cubes, Cube boundingCube) {
+
+    public Figure(Glass glass, Cube[] cubes, Cube boundingCube, Color color) {
         this.cubes = cubes;
         this.glass = glass;
         this.boundingCube = boundingCube;
+        this.color = color;
     }
 
 
@@ -33,7 +37,7 @@ public class Figure implements canMoveAndRotate {
     public void move(Direction direction) {
         if (direction == Direction.South) {
             if (!canMove(direction)) {
-                fireFigureAction();
+                fireFigureFell();
             }
             else{
                 Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordY()).reversed());
@@ -42,6 +46,8 @@ public class Figure implements canMoveAndRotate {
                     cube.move(direction, i, glass);
                 }
                 boundingCube.setCoordY(boundingCube.getCoordY() + 1);
+                System.out.print("вниз ");
+                fireFigureMoveDown();
             }
         } else {
             if (canMove(direction)) {
@@ -52,6 +58,7 @@ public class Figure implements canMoveAndRotate {
                         cube.move(direction, i, glass);
                     }
                     boundingCube.setCoordX(boundingCube.getCoordX() + 1);
+                    System.out.print("вправо ");
                 } else if (direction == Direction.East) {
                     Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()));
                     for (int i = 0; i < cubes.length; i++) {
@@ -59,6 +66,7 @@ public class Figure implements canMoveAndRotate {
                         cube.move(direction, i, glass);
                     }
                     boundingCube.setCoordX(boundingCube.getCoordX() - 1);
+                    System.out.print("влево ");
                 }
             }
         }
@@ -101,6 +109,14 @@ public class Figure implements canMoveAndRotate {
             }
         }
     }
+
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    public Color getColor() {
+        return color;
+    }
     public Cube[] getCubes() {
         return cubes;
     }
@@ -118,21 +134,27 @@ public class Figure implements canMoveAndRotate {
     //-----------------------------------------------Event----------------------------
     ArrayList<FigureActionListener> _listeners = new ArrayList<>();
 
-    // ������������ ���������
+
     public void addFigureActionListener(FigureActionListener l) {
         _listeners.add(l);
     }
 
-    // ����������� ���������
+
     public void removeFigureActionListener(FigureActionListener l) {
         _listeners.remove(l);
     }
 
 
-    protected void fireFigureAction() {
+    protected void fireFigureFell() {
         FigureActionEvent e = new FigureActionEvent(this);
         for (FigureActionListener l : _listeners) {
             l.onFigureFell(e);
+        }
+    }
+    protected void fireFigureMoveDown() {
+        FigureActionEvent e = new FigureActionEvent(this);
+        for (FigureActionListener l : _listeners) {
+            l.onFigureMoveDown(e);
         }
     }
 }

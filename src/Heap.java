@@ -25,4 +25,8 @@ public class Heap {
             }
         }
     }
+
+    public List<Cube> getAllCubes() {
+        return new ArrayList<>(cubes);
+    }
 }

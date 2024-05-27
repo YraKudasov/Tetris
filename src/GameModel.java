@@ -15,7 +15,7 @@ public class GameModel {
     private int score;
 
     public GameModel() {
-        this.glass = new Glass(10, 5);
+        this.glass = new Glass(20, 10);
         this.factoryFigures = new FactoryFigures(glass);
         this.score = 0;
     }
@@ -82,6 +82,8 @@ public class GameModel {
             Figure figure = glass.getFigure();
             if (figure != null) {
                 figure.move(Direction.South);
+
+
             } else {
                 // Фигура упала или отсутствует, останавливаем таймер и генерируем новую фигуру
                 timer.cancel(); // Останавливаем таймер
@@ -114,6 +116,16 @@ public class GameModel {
             } else {
                 System.out.print("Игра окончна\n Счет:" + getScore());
             }
+        }
+
+        @Override
+        public void onFigureMoveDown(FigureActionEvent e) {
+
+        }
+
+        @Override
+        public void onFigureGenerate(FigureActionEvent e) {
+
         }
 
     }

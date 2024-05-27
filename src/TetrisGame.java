@@ -34,7 +34,7 @@ public class TetrisGame extends JFrame {
         content.add(_gamePanel, BorderLayout.CENTER);
 
         setContentPane(content);
-        setTitle("��������� �����");
+        setTitle("Tetris");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);

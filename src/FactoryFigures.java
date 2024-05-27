@@ -1,7 +1,14 @@
+import events.FigureActionEvent;
+import events.FigureActionListener;
+
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class FactoryFigures {
     private Glass glass;
+
+    private static final Color[] COLORS = {Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW};
 
     public FactoryFigures(Glass glass) {
         this.glass = glass;
@@ -25,12 +32,30 @@ public class FactoryFigures {
         int[] boundingCoords = shapeCoords[0];
         Cube boundingCube = new Cube(boundingCoords[0], boundingCoords[1]);
 
-        return new Figure(glass, cubes, boundingCube);
+        Color randomColor = COLORS[new Random().nextInt(COLORS.length)]; // Choose a random color for the figure
+        return new Figure(glass, cubes, boundingCube, randomColor);
     }
 
     private int getRandomShape() {
         int[] shapes = {0, 1, 2};
-        Random random = new Random();
-        return shapes[random.nextInt(shapes.length)];
+        fireFigureGenerate();
+        return shapes[new Random().nextInt(shapes.length)];
+    }
+
+    ArrayList<FigureActionListener> _listeners = new ArrayList<>();
+
+    public void addFigureGenerateListener(FigureActionListener l) {
+        _listeners.add(l);
+    }
+
+    public void removeFigureGenerateListener(FigureActionListener l) {
+        _listeners.remove(l);
+    }
+
+    protected void fireFigureGenerate() {
+        FigureActionEvent e = new FigureActionEvent(this);
+        for (FigureActionListener l : _listeners) {
+            l.onFigureGenerate(e);
+        }
     }
 }

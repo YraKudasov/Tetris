@@ -1,47 +1,95 @@
+import events.FigureActionEvent;
+import events.FigureActionListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class GameFieldPanel extends JPanel implements KeyListener {
 
     private GameModel _model;
 
-    private static final int CELL_SIZE = 30;
+    private static final int CELL_SIZE = 40;
     private static final int GAP = 2;
-    private static final int FONT_HEIGHT = 15;
 
-    // ------------------------- �������� ���������� ---------------------------
 
-    private static final Color BACKGROUND_COLOR = new Color(175, 255, 175);
-    private static final Color GRID_COLOR = Color.GREEN;
+    // ----------------------------------------------------
+
+    private static final Color BACKGROUND_COLOR = new Color(108, 88, 76);
+    private static final Color GRID_COLOR = Color.WHITE;
 
 
     public GameFieldPanel(GameModel model) {
         _model = model;
 
-        // ������������� �������
         int width = 2 * GAP + CELL_SIZE * _model.getGlass().getWidth();
         int height = 2 * GAP + CELL_SIZE * _model.getGlass().getHeight();
         setPreferredSize(new Dimension(width, height));
-        setBackground(Color.RED);
-
 
         addKeyListener(this);
     }
 
     @Override
     public void paintComponent(Graphics g) {
-
-        // ��������� ����
+        FigureObserver observer = new FigureObserver();
+        _model.getGlass().getFigure().addFigureActionListener(observer);
+        FigureObserver observer2 = new FigureObserver();
+        _model.getFactoryFigures().addFigureGenerateListener(observer2);
         int width = getWidth();
         int height = getHeight();
         g.setColor(BACKGROUND_COLOR);
         g.fillRect(0, 0, width, height);
-        g.setColor(Color.BLACK);   // ���������������� ���� ����
+        drawGrid(g);
+        drawFigure(g);
+        drawHeap(g);
+    }
+
+    private void drawGrid(Graphics g) {
+        int width = getWidth();
+        int height = getHeight();
+
+        g.setColor(GRID_COLOR);
+
+        for (int i = 0; i < _model.getGlass().getWidth(); i++) {
+            int x = GAP + CELL_SIZE * (i);
+            g.drawLine(x, 0, x, height);
+        }
+
+        for (int i = 0; i < _model.getGlass().getHeight(); i++) {
+            int y = GAP + CELL_SIZE * (i);
+            g.drawLine(0, y, width, y);
+        }
 
     }
 
+
+    private void drawFigure(Graphics g) {
+
+        // Устанавливаем цвет для рисования фигуры
+        g.setColor(_model.getGlass().getFigure().getColor());
+        for (Cube cube : _model.getGlass().getFigure().getCubes()) {
+            int x = cube.getCoordX();
+            int y = cube.getCoordY();
+            drawCube(g, x, y);
+        }
+    }
+
+    private void drawCube(Graphics g, int x, int y) {
+        g.fillRect(GAP + CELL_SIZE * x, GAP + CELL_SIZE * y, (CELL_SIZE-1), (CELL_SIZE-1));
+    }
+
+    private void drawHeap(Graphics g) {
+        g.setColor(Color.GRAY); // Set color for drawing the heap
+        for (Cube cube : _model.getGlass().getHeap().getAllCubes()) {
+            int x = cube.getCoordX();
+            int y = cube.getCoordY();
+            drawCube(g, x, y);
+        }
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -56,10 +104,33 @@ public class GameFieldPanel extends JPanel implements KeyListener {
             _model.getGlass().getFigure().move(Direction.West); // Движение фигуры вправо
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             _model.getGlass().getFigure().move(Direction.South); // Ускорение падения фигуры
+        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+            _model.getGlass().getFigure().rotate(); // Ускорение падения фигуры
         }
+        repaint();
     }
+
     @Override
     public void keyReleased(KeyEvent e) {
+
+    }
+
+    private class FigureObserver implements FigureActionListener {
+
+        @Override
+        public void onFigureFell(FigureActionEvent e) {
+
+        }
+
+        @Override
+        public void onFigureMoveDown(FigureActionEvent e) {
+            repaint();
+        }
+
+        @Override
+        public void onFigureGenerate(FigureActionEvent e) {
+            repaint();
+        }
 
     }
 }

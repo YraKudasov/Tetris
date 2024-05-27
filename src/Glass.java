@@ -24,7 +24,6 @@ public class Glass {
             List<Cell> row = new ArrayList<>();
             for (int x = 0; x < width; x++) {
                 Cell cell = new Cell(x, y);
-                System.out.print("(" + cell.getX() + ", " + cell.getY() + ") ");
 
                 // Добавляем стену справа для каждого элемента в верхнем ряду
                 if (x == 0) {
