@@ -3,8 +3,10 @@ import java.util.List;
 
 public class Heap {
     private List<Cube> cubes;
+    protected Glass glass;
 
-    public Heap() {
+    public Heap(Glass glass) {
+        this.glass = glass;
         this.cubes = new ArrayList<>();
     }
 
@@ -20,7 +22,7 @@ public class Heap {
                     this.cubes.remove(cube);
                     i--; // Уменьшаем счетчик, чтобы не пропустить следующий элемент после удаления
                 } else if (cube.getCoordY() < rowIndex) {
-                    cube.setCoordY(cube.getCoordY() + 1); // Падение рядов, находящихся выше удаленного, на одну клетку вниз
+                    cube.move(Direction.South, this.glass); // Падение рядов, находящихся выше удаленного, на одну клетку вниз
                 }
             }
         }

@@ -10,7 +10,6 @@ public class GameModel {
     private Timer timer;
     private Glass glass;
 
-
     private FactoryFigures factoryFigures;
     private int score;
 
@@ -82,8 +81,6 @@ public class GameModel {
             Figure figure = glass.getFigure();
             if (figure != null) {
                 figure.move(Direction.South);
-
-
             } else {
                 // Фигура упала или отсутствует, останавливаем таймер и генерируем новую фигуру
                 timer.cancel(); // Останавливаем таймер
@@ -114,7 +111,7 @@ public class GameModel {
                 glass.getHeap().burnRow(glass.getFilledRows());
                 System.out.print("Фигура упала \n");
             } else {
-                System.out.print("Игра окончна\n Счет:" + getScore());
+                System.out.print("Игра окончена\n Счет:" + getScore()+"\n");
             }
         }
 

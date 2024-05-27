@@ -13,8 +13,8 @@ public class GameFieldPanel extends JPanel implements KeyListener {
 
     private GameModel _model;
 
-    private static final int CELL_SIZE = 40;
-    private static final int GAP = 2;
+    private static final int CELL_SIZE = 35;
+
 
 
     // ----------------------------------------------------
@@ -26,8 +26,8 @@ public class GameFieldPanel extends JPanel implements KeyListener {
     public GameFieldPanel(GameModel model) {
         _model = model;
 
-        int width = 2 * GAP + CELL_SIZE * _model.getGlass().getWidth();
-        int height = 2 * GAP + CELL_SIZE * _model.getGlass().getHeight();
+        int width = CELL_SIZE * _model.getGlass().getWidth();
+        int height =  CELL_SIZE * _model.getGlass().getHeight();
         setPreferredSize(new Dimension(width, height));
 
         addKeyListener(this);
@@ -54,13 +54,13 @@ public class GameFieldPanel extends JPanel implements KeyListener {
 
         g.setColor(GRID_COLOR);
 
-        for (int i = 0; i < _model.getGlass().getWidth(); i++) {
-            int x = GAP + CELL_SIZE * (i);
-            g.drawLine(x, 0, x, height);
+        for (int i = 0; i <= _model.getGlass().getWidth(); i++) {
+            int x =  CELL_SIZE * (i);
+            g.drawLine(x, 4*CELL_SIZE, x, height);
         }
 
-        for (int i = 0; i < _model.getGlass().getHeight(); i++) {
-            int y = GAP + CELL_SIZE * (i);
+        for (int i = 4; i <= _model.getGlass().getHeight(); i++) {
+            int y =  CELL_SIZE * (i);
             g.drawLine(0, y, width, y);
         }
 
@@ -79,7 +79,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
     }
 
     private void drawCube(Graphics g, int x, int y) {
-        g.fillRect(GAP + CELL_SIZE * x, GAP + CELL_SIZE * y, (CELL_SIZE-1), (CELL_SIZE-1));
+        g.fillRect(CELL_SIZE * x,  CELL_SIZE * y, (CELL_SIZE-1), (CELL_SIZE-1));
     }
 
     private void drawHeap(Graphics g) {

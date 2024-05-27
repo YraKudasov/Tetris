@@ -15,7 +15,7 @@ public class Glass {
         this.width = width;
         cells = new ArrayList<>();
         figure = null;
-        heap = new Heap();
+        heap = new Heap(this);
         createGlass();
     }
 
@@ -95,6 +95,10 @@ public class Glass {
         List<Integer> filledRows = new ArrayList<>();
         for (int y = 0; y < getHeight(); y++) {
             if (isRowFull(y)) {
+                for (int x = 0; x < getWidth(); x++) {
+                    Cell cell = getCell(x, y);
+                    cell.removeCube();
+                }
                 filledRows.add(y);
             }
         }
@@ -102,13 +106,26 @@ public class Glass {
         for (int i = 0; i < filledRows.size(); i++) {
             filledRowsArray[i] = filledRows.get(i);
         }
+
         return filledRowsArray;
+    }
+
+    private void makeRowsFall(int[] filledRows) {
+        for (int rowIndex : filledRows) {
+            for (int y = rowIndex - 1; y >= 0; y--) {
+                for (int x = 0; x < getWidth(); x++) {
+                    Cell cell = getCell(x, y);
+                    cell.getCube().move(Direction.South, this);
+                    cell.removeCube();
+                }
+            }
+        }
     }
 
     public boolean isOverflow() {
         // Проходимся по всем клеткам второго ряда
         // Height - высота стакана
-        int y = 2;
+        int y = 3;
         for (int x = 0; x < getWidth(); x++) { // Width - ширина стакана
             Cell cell = getCell(x, y); // Получаем клетку по координатам x и y
             if (cell != null && cell.hasCube()) { // Проверяем, есть ли в клетке кубик

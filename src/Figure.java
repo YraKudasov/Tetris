@@ -43,7 +43,7 @@ public class Figure implements canMoveAndRotate {
                 Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordY()).reversed());
                 for (int i = 0; i < cubes.length; i++) {
                     Cube cube = cubes[i];
-                    cube.move(direction, i, glass);
+                    cube.move(direction,  glass);
                 }
                 boundingCube.setCoordY(boundingCube.getCoordY() + 1);
                 System.out.print("вниз ");
@@ -55,7 +55,7 @@ public class Figure implements canMoveAndRotate {
                     Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()).reversed());
                     for (int i = 0; i < cubes.length; i++) {
                         Cube cube = cubes[i];
-                        cube.move(direction, i, glass);
+                        cube.move(direction,  glass);
                     }
                     boundingCube.setCoordX(boundingCube.getCoordX() + 1);
                     System.out.print("вправо ");
@@ -63,7 +63,7 @@ public class Figure implements canMoveAndRotate {
                     Arrays.sort(cubes, Comparator.comparingInt(cube -> ((Cube) cube).getCoordX()));
                     for (int i = 0; i < cubes.length; i++) {
                         Cube cube = cubes[i];
-                        cube.move(direction, i, glass);
+                        cube.move(direction,  glass);
                     }
                     boundingCube.setCoordX(boundingCube.getCoordX() - 1);
                     System.out.print("влево ");

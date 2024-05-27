@@ -59,7 +59,7 @@ public class Cube {
     }
 
 
-    public void move(Direction direction, int index, Glass glass) {
+    public void move(Direction direction,  Glass glass) {
         // Предполагая, что возможны четыре направления: вверх, вниз, влево и вправо
         switch (direction) {
             case South:
