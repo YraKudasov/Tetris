@@ -45,14 +45,6 @@ public class ShadowOfFigure {
         }
     }
 
-    private boolean containsCubeWithCoordY(int coordX, int coordY) {
-        for (Cube cube : cubesOfShadow) {
-            if (cube.getCoordX() == coordX && cube.getCoordY() == coordY) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public Color getColor() {
         return color;

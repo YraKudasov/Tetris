@@ -35,6 +35,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
 
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         FigureObserver observer = new FigureObserver();
         _model.getGlass().getFigure().addFigureActionListener(observer);
         FigureObserver observer2 = new FigureObserver();
@@ -47,6 +48,9 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         drawFigure(g);
         drawShadowOfFigure(g);
         drawHeap(g);
+        g.setColor(Color.BLACK);
+        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.drawString("Score: " + _model.getScore(), 10, 30);
     }
 
     private void drawGrid(Graphics g) {
