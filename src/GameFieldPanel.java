@@ -45,6 +45,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         g.fillRect(0, 4*CELL_SIZE, width, height);
         drawGrid(g);
         drawFigure(g);
+        drawShadowOfFigure(g);
         drawHeap(g);
     }
 
@@ -78,6 +79,28 @@ public class GameFieldPanel extends JPanel implements KeyListener {
                 drawCube(g, x, y);
             }
         }
+    }
+
+    private void drawShadowOfFigure(Graphics g) {
+
+        // Устанавливаем цвет для рисования фигуры
+        g.setColor(_model.getGlass().getFigure().getShadow().getColor());
+        for (Cube cube : _model.getGlass().getFigure().getShadow().getCubesOfShadow()) {
+            int x = cube.getCoordX();
+            int y = cube.getCoordY();
+            if(y>=4) {
+                drawShadowCube(g, x, y);
+            }
+        }
+    }
+
+    private void drawShadowCube(Graphics g, int x, int y) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setStroke(new BasicStroke(3.0f));
+        g.drawLine(CELL_SIZE * x, CELL_SIZE * y, CELL_SIZE * (x+1), CELL_SIZE * y);
+        g.drawLine(CELL_SIZE * x, CELL_SIZE * y, CELL_SIZE * x, CELL_SIZE * (y+1));
+        g.drawLine(CELL_SIZE * x, CELL_SIZE * (y+1), CELL_SIZE * (x+1), CELL_SIZE * (y+1));
+        g.drawLine(CELL_SIZE * (x+1), CELL_SIZE * y, CELL_SIZE * (x+1), CELL_SIZE * (y+1));
     }
 
     private void drawCube(Graphics g, int x, int y) {

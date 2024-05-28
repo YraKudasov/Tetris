@@ -29,7 +29,7 @@ public class Cube {
                     // Получаем ячейку, которая находится на одну позицию ниже текущей
                     Cell nextCell = glass.getCell(this.cubeX, this.cubeY + 1);
                     // Проверяем, что следующая ячейка пуста
-                    if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().movable)) {
+                    if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().isMovable())) {
                         return true;
                     }
                 }
@@ -39,7 +39,7 @@ public class Cube {
                     // Получаем ячейку, которая находится на одну позицию левее текущей
                     Cell nextCell = glass.getCell(this.cubeX - 1, this.cubeY);
                     // Проверяем, что следующая ячейка пуста
-                    if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().movable)) {
+                    if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().isMovable())) {
                         return true;
                     }
                 }
@@ -49,7 +49,7 @@ public class Cube {
                     // Получаем ячейку, которая находится на одну позицию правее текущей
                     Cell nextCell = glass.getCell(this.cubeX + 1, this.cubeY);
                     // Проверяем, что следующая ячейка пуста
-                    if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().movable)) {
+                    if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().isMovable())) {
                         return true;
                     }
                 }
@@ -100,7 +100,7 @@ public class Cube {
             // Получаем ячейку, которая находится на одну позицию ниже текущей
             Cell nextCell = glass.getCell(boundingX - this.cubeY + boundingY, boundingY + this.cubeX - boundingX);
             // Проверяем, что следующая ячейка пуста
-            if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().movable)) {
+            if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().isMovable())) {
                 if (nextCell.hasCube() && nextCell.getCube().movable) {
                     waitingCubes[index] = index;
                 }
