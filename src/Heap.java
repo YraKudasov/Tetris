@@ -14,7 +14,8 @@ public class Heap {
         this.cubes.add(cube);
     }
 
-    public void burnRow(int[] filledRows) {
+    public int burnRow(int[] filledRows) {
+        int countOfRows = filledRows.length;
         for (int rowIndex : filledRows) {
             for (int i = 0; i < this.cubes.size(); i++) {
                 Cube cube = this.cubes.get(i);
@@ -26,6 +27,7 @@ public class Heap {
                 }
             }
         }
+        return countOfRows;
     }
 
     public List<Cube> getAllCubes() {

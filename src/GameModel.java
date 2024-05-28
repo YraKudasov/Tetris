@@ -107,8 +107,8 @@ public class GameModel {
         public void onFigureFell(FigureActionEvent e) {
             addFigureToHeap();
             if (!isGameOver()) {
-                updateScore(200);
-                glass.getHeap().burnRow(glass.getFilledRows());
+                int ratio = glass.getHeap().burnRow(glass.getFilledRows());
+                updateScore( ratio * 100);
                 System.out.print("Фигура упала \n");
             } else {
                 System.out.print("Игра окончена\n Счет:" + getScore()+"\n");
