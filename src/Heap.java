@@ -33,4 +33,8 @@ public class Heap {
     public List<Cube> getAllCubes() {
         return new ArrayList<>(cubes);
     }
+
+    public void clear() {
+        cubes.clear();  // Очистить список кубиков
+    }
 }

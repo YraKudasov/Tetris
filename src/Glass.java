@@ -132,6 +132,9 @@ public class Glass {
         figure = null; // Удалите ссылку на объект figure
     }
 
+
+
+
     public int getHeight() {
         return height;
     }
@@ -141,4 +144,15 @@ public class Glass {
     }
 
 
+    public void clearGlass() {
+        for (List<Cell> row : cells) {
+            for (Cell cell : row) {
+                if (cell.hasCube()) {
+                    cell.removeCube(); // Удаляем кубик из клетки
+                }
+            }
+        }
+        heap.clear(); // Очищаем кучу
+        figure = null; // Удаляем текущую фигуру
+    }
 }

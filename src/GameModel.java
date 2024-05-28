@@ -1,6 +1,7 @@
 import events.FigureActionEvent;
 import events.FigureActionListener;
 
+import javax.swing.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,6 +26,18 @@ public class GameModel {
         timer.scheduleAtFixedRate(new FallingFigureTask(), 0, 1000);
     }
 
+    public void restart(){
+        glass.clearGlass();
+        score = 0;
+
+        // Останавливаем текущий таймер
+        if (timer != null) {
+            timer.cancel();
+            timer.purge(); // Очищаем очередь таймера
+        }
+        
+        start();
+    }
 
     public void initiateFigureGeneration() {
         // Инициируем генерацию фигур фабрикой фигур
@@ -114,6 +127,8 @@ public class GameModel {
                 System.out.print("Игра окончена\n Счет:" + getScore()+"\n");
             }
         }
+
+
 
         @Override
         public void onFigureMoveDown(FigureActionEvent e) {
