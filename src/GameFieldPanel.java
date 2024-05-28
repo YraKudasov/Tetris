@@ -42,7 +42,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         int width = getWidth();
         int height = getHeight();
         g.setColor(BACKGROUND_COLOR);
-        g.fillRect(0, 0, width, height);
+        g.fillRect(0, 4*CELL_SIZE, width, height);
         drawGrid(g);
         drawFigure(g);
         drawHeap(g);
@@ -74,7 +74,9 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         for (Cube cube : _model.getGlass().getFigure().getCubes()) {
             int x = cube.getCoordX();
             int y = cube.getCoordY();
-            drawCube(g, x, y);
+            if(y>=4) {
+                drawCube(g, x, y);
+            }
         }
     }
 
@@ -98,13 +100,13 @@ public class GameFieldPanel extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT && _model != null) {
             _model.getGlass().getFigure().move(Direction.East); // Движение фигуры влево
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && _model != null) {
             _model.getGlass().getFigure().move(Direction.West); // Движение фигуры вправо
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN && _model != null) {
             _model.getGlass().getFigure().move(Direction.South); // Ускорение падения фигуры
-        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+        } else if (e.getKeyCode() == KeyEvent.VK_UP && _model != null) {
             _model.getGlass().getFigure().rotate(); // Ускорение падения фигуры
         }
         repaint();

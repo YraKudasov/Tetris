@@ -110,17 +110,7 @@ public class Glass {
         return filledRowsArray;
     }
 
-    private void makeRowsFall(int[] filledRows) {
-        for (int rowIndex : filledRows) {
-            for (int y = rowIndex - 1; y >= 0; y--) {
-                for (int x = 0; x < getWidth(); x++) {
-                    Cell cell = getCell(x, y);
-                    cell.getCube().move(Direction.South, this);
-                    cell.removeCube();
-                }
-            }
-        }
-    }
+
 
     public boolean isOverflow() {
         // Проходимся по всем клеткам второго ряда
