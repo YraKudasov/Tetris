@@ -16,9 +16,13 @@ public class FactoryFigures {
 
     public Figure createRandomFigure() {
         int[][][] shapes = {
-                {{2, 0}, {2, 1}, {1, 0}, {2, 0}, {3, 0}},  // 'T'
-                {{2, 2}, {1, 2}, {2, 0}, {2, 1}, {2, 2}}, // 'J'
-                {{1, 0}, {1, 1}, {2, 1}, {1, 0}, {2, 0}}  // 'O'
+                {{5, 1}, {5, 1}, {4, 1}, {6, 1}, {5, 2}},  // 'T'
+                {{6, 2}, {6, 2}, {5, 2}, {4, 2}, {6, 1}}, // 'J'
+                {{4, 2}, {4, 2}, {5, 2}, {6, 2}, {4, 1}}, // 'L'
+                {{5, 2}, {5, 2}, {4, 2}, {4, 1}, {5, 1}}, // 'O'
+                {{4, 2}, {4, 2}, {3, 2}, {5, 2}, {6, 2}},  // 'I'
+                {{4, 2}, {4, 2}, {3, 2}, {4, 1}, {5, 1}},  // 'S'
+                {{5, 2}, {5, 2}, {6, 2}, {5, 1}, {4, 1}}  // 'Z'
         };
 
         int shapeIndex = getRandomShape();
@@ -37,7 +41,7 @@ public class FactoryFigures {
     }
 
     private int getRandomShape() {
-        int[] shapes = {0, 1, 2};
+        int[] shapes = {0, 1, 2, 3, 4, 5, 6};
         fireFigureGenerate();
         return shapes[new Random().nextInt(shapes.length)];
     }

@@ -2,6 +2,9 @@ import events.FigureActionEvent;
 import events.FigureActionListener;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,10 +17,15 @@ public class GameModel {
     private FactoryFigures factoryFigures;
     private int score;
 
+    private int endWindowIndex;
+    private static GameOverWindow gameOverWindow;
+
+
     public GameModel() {
         this.glass = new Glass(20, 10);
         this.factoryFigures = new FactoryFigures(glass);
         this.score = 0;
+        this.endWindowIndex = 0;
     }
 
 
@@ -26,16 +34,17 @@ public class GameModel {
         timer.scheduleAtFixedRate(new FallingFigureTask(), 0, 1000);
     }
 
-    public void restart(){
+    public void restart() {
         glass.clearGlass();
         score = 0;
+        endWindowIndex = 0;
 
         // Останавливаем текущий таймер
         if (timer != null) {
             timer.cancel();
             timer.purge(); // Очищаем очередь таймера
         }
-        
+
         start();
     }
 
@@ -68,8 +77,11 @@ public class GameModel {
 
 
     public boolean isGameOver() {
-        // Определяем окончание игры
-        return glass.isOverflow();
+        boolean gameOver = glass.isOverflow();
+        if (gameOver && gameOverWindow == null) {
+            gameOverWindow = new GameOverWindow(score);
+        }
+        return gameOver;
     }
 
 
@@ -97,11 +109,8 @@ public class GameModel {
             } else {
                 // Фигура упала или отсутствует, останавливаем таймер и генерируем новую фигуру
                 timer.cancel(); // Останавливаем таймер
-                if (isGameOver()) {
-                    // Если стакан переполнен, завершаем игру
-                    System.out.println("Игра окончена, стакан переполнен!");
-                    // Здесь можно добавить код для завершения игры
-                } else {
+                if (!isGameOver()) {
+
                     initiateFigureGeneration(); // Генерируем новую фигуру
                     glass.getFigure().addFigureActionListener(new FigureObserver());
                     timer = new Timer(); // Создаем новый таймер
@@ -121,13 +130,12 @@ public class GameModel {
             addFigureToHeap();
             if (!isGameOver()) {
                 int ratio = glass.getHeap().burnRow(glass.getFilledRows());
-                updateScore( ratio * 100);
+                updateScore(ratio * 100);
                 System.out.print("Фигура упала \n");
             } else {
-                System.out.print("Игра окончена\n Счет:" + getScore()+"\n");
+                System.out.print("Игра окончена\n Счет:" + getScore() + "\n");
             }
         }
-
 
 
         @Override
@@ -142,6 +150,37 @@ public class GameModel {
 
     }
 
+    class GameOverWindow {
+        private JFrame frame;
+        private JLabel scoreLabel;
+        private JButton restartButton;
+        private boolean displayed;
 
+        public GameOverWindow(int score) {
+
+            displayed = true;
+            frame = new JFrame("Game Over");
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setLayout(new FlowLayout());
+
+            scoreLabel = new JLabel("Score: " + score);
+            restartButton = new JButton("Restart");
+            restartButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    restart();
+                    frame.dispose();
+                    gameOverWindow = null;
+                }
+            });
+
+            frame.add(scoreLabel);
+            frame.add(restartButton);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
+        }
+
+    }
 }
 
