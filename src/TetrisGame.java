@@ -3,12 +3,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 public class TetrisGame extends JFrame {
 
     private GameModel _model;
-
     private GameFieldPanel _gamePanel;
+    private boolean gameStarted = false; // Flag to track if the game has started
 
     //===================================================================== main
     public static void main(String[] args) {
@@ -17,17 +16,13 @@ public class TetrisGame extends JFrame {
                 new TetrisGame();
             }
         });
-
     }
 
     public TetrisGame() {
         this.setTitle("Tetris");
 
         _model = new GameModel();
-        _model.start();
         _gamePanel = new GameFieldPanel(_model);
-
-
 
         JPanel controlPanel = new JPanel(new FlowLayout());
 
@@ -37,17 +32,16 @@ public class TetrisGame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 _model.restart();
-                _gamePanel.repaint(); // Перерисовка игрового поля
+                _gamePanel.repaint(); // Repaint the game field
             }
         });
 
-        restartButton.setFocusable(false); // Убираем фокус с кнопки рестарта
+        restartButton.setFocusable(false); // Remove focus from the restart button
 
         controlPanel.add(restartButton);
 
         _gamePanel.setFocusable(true);
-        _gamePanel.requestFocusInWindow(); // Добавляем фокус на GameFieldPanel после добавления кнопки
-
+        _gamePanel.requestFocusInWindow(); // Set focus on the game field panel
 
         JPanel content = new JPanel();
         content.setLayout(new BorderLayout());
@@ -55,9 +49,21 @@ public class TetrisGame extends JFrame {
         content.add(_gamePanel, BorderLayout.CENTER);
 
         setContentPane(content);
-        setTitle("Tetris");
 
+        // Prompt dialog to start a new game
+        int input = JOptionPane.showOptionDialog(null, "Добро пожаловать в Тетрис. Нажми Yes для начала новой игры!",
+                "Tetris", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 
+        if (input == JOptionPane.YES_OPTION) {
+            gameStarted = true; // Set the gameStarted flag to true
+            startGame(); // Start the game
+        } else {
+            // User clicked "No" or closed the dialog, exit the application
+            System.exit(0);
+        }
+    }
+
+    private void startGame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         pack();
         setLocationRelativeTo(null);
@@ -65,10 +71,7 @@ public class TetrisGame extends JFrame {
         setVisible(true);
 
         _gamePanel.setFocusable(true);
-        _gamePanel.setVisible(true);
-
-
+        _gamePanel.setVisible(gameStarted); // Set the visibility of the game field panel based on the gameStarted flag
+        _model.start(); // Start the game model
     }
-
-
 }

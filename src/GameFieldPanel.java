@@ -13,7 +13,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
 
     private GameModel _model;
 
-    private static final int CELL_SIZE = 35;
+    private static final int CELL_SIZE = 25;
 
 
 
