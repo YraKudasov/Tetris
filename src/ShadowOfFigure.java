@@ -51,7 +51,7 @@ public class ShadowOfFigure {
     }
 
     public Cube[] getCubesOfShadow() {
-        return cubesOfShadow;
+        return cubesOfShadow == null ? new Cube[]{} : cubesOfShadow;
     }
 
 }

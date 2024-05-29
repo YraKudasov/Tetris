@@ -127,13 +127,21 @@ public class GameFieldPanel extends JPanel implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_LEFT && _model != null) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            Figure figure = _model.getGlass().getFigure();
+            if (figure == null) return;
             _model.getGlass().getFigure().move(Direction.East); // Движение фигуры влево
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT && _model != null) {
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            Figure figure = _model.getGlass().getFigure();
+            if (figure == null) return;
             _model.getGlass().getFigure().move(Direction.West); // Движение фигуры вправо
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN && _model != null) {
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN ) {
+            Figure figure = _model.getGlass().getFigure();
+            if (figure == null) return;
             _model.getGlass().getFigure().move(Direction.South); // Ускорение падения фигуры
-        } else if (e.getKeyCode() == KeyEvent.VK_UP && _model != null) {
+        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+            Figure figure = _model.getGlass().getFigure();
+            if (figure == null) return;
             _model.getGlass().getFigure().rotate(); // Ускорение падения фигуры
         }
         repaint();
