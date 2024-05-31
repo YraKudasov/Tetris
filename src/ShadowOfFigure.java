@@ -6,18 +6,17 @@ public class ShadowOfFigure {
     private Cube[] cubesOfShadow;
     private Color color;
 
-    private Glass glass;
+
     private Figure figure;
 
-    public ShadowOfFigure(Color color, Figure figure, Glass glass) {
+    public ShadowOfFigure(Color color, Figure figure) {
         this.color = color;
         this.figure = figure;
-        this.glass = glass;
     }
 
     public void updateShadow(Cube[] cubes) {
         // Обновляем позиции кубиков тени
-        int minY = glass.getHeight();
+        int minY = figure.getGlass().getHeight();
 
         cubesOfShadow = new Cube[cubes.length];
         for (int i = 0; i < cubes.length; i++) {
@@ -27,8 +26,8 @@ public class ShadowOfFigure {
 
         for (Cube cube : cubesOfShadow) {
             int currentMinY = 0;
-            for (int i = cube.getCoordY()+1; i < glass.getHeight(); i++) {
-                Cell nextCell = glass.getCell(cube.getCoordX(), i);
+            for (int i = cube.getCoordY()+1; i < figure.getGlass().getHeight(); i++) {
+                Cell nextCell = figure.getGlass().getCell(cube.getCoordX(), i);
                 if (nextCell != null && (!nextCell.hasCube() || nextCell.hasCube() && nextCell.getCube().isMovable())) {
                     currentMinY++;
                 } else {
