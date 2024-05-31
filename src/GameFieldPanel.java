@@ -50,7 +50,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         drawHeap(g);
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Score: " + _model.getScore(), 10, 30);
+        g.drawString("Счет: " + _model.getScore(), 10, 30);
     }
 
     private void drawGrid(Graphics g) {
@@ -142,7 +142,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         } else if (e.getKeyCode() == KeyEvent.VK_UP) {
             Figure figure = _model.getGlass().getFigure();
             if (figure == null) return;
-            _model.getGlass().getFigure().rotate(); // Ускорение падения фигуры
+            _model.getGlass().getFigure().rotate(); // Поворот фигуры
         }
         repaint();
     }
@@ -161,7 +161,10 @@ public class GameFieldPanel extends JPanel implements KeyListener {
 
         @Override
         public void onFigureMoveDown(FigureActionEvent e) {
-            repaint();
+            Figure figure = _model.getGlass().getFigure();
+            if (figure != null){
+                repaint();
+            }
         }
 
         @Override

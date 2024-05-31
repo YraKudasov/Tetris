@@ -21,7 +21,7 @@ public class Figure implements canMoveAndRotate {
         this.glass = glass;
         this.boundingCube = boundingCube;
         this.color = color;
-        this.shadow = new ShadowOfFigure(color, this, glass);
+        this.shadow = new ShadowOfFigure(color, this);
     }
 
 
@@ -132,6 +132,8 @@ public class Figure implements canMoveAndRotate {
     public ShadowOfFigure getShadow() {
         return shadow;
     }
+
+    public Glass getGlass() {return glass;}
 
     public Cube getCube(int index) {
         // Проверяем, что индекс находится в пределах массива кубов

@@ -26,7 +26,7 @@ public class TetrisGame extends JFrame {
 
         JPanel controlPanel = new JPanel(new FlowLayout());
 
-        JButton restartButton = new JButton("Restart");
+        JButton restartButton = new JButton("Начать заново");
 
         restartButton.addActionListener(new ActionListener() {
             @Override
@@ -51,7 +51,12 @@ public class TetrisGame extends JFrame {
         setContentPane(content);
 
         // Prompt dialog to start a new game
-        int input = JOptionPane.showOptionDialog(null, "Добро пожаловать в Тетрис. Нажми Yes для начала новой игры!",
+        int input = JOptionPane.showOptionDialog(null, "Добро пожаловать в Тетрис. Нажми Yes для начала новой игры! \n" +
+                        "Управление: \n" +
+                        "⬅ переместить фигуру влево\n" +
+                        "➡ переместить фигуру вправо\n" +
+                        "⬇ ускорить падение фигуры\n" +
+                        "⬆ поворот фигуры",
                 "Tetris", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 
         if (input == JOptionPane.YES_OPTION) {

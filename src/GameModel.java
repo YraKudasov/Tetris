@@ -17,7 +17,6 @@ public class GameModel {
     private FactoryFigures factoryFigures;
     private int score;
 
-    private int endWindowIndex;
     private static GameOverWindow gameOverWindow;
 
 
@@ -25,7 +24,6 @@ public class GameModel {
         this.glass = new Glass(20, 10);
         this.factoryFigures = new FactoryFigures(glass);
         this.score = 0;
-        this.endWindowIndex = 0;
     }
 
 
@@ -37,7 +35,6 @@ public class GameModel {
     public void restart() {
         glass.clearGlass();
         score = 0;
-        endWindowIndex = 0;
 
         // Останавливаем текущий таймер
         if (timer != null) {
@@ -48,13 +45,13 @@ public class GameModel {
         start();
     }
 
-    public void initiateFigureGeneration() {
+    private void initiateFigureGeneration() {
         // Инициируем генерацию фигур фабрикой фигур
         Figure figure = factoryFigures.createRandomFigure();
         glass.setFigure(figure);
     }
 
-    public void addFigureToHeap() {
+    private void addFigureToHeap() {
         Figure figure = glass.getFigure();
         Heap heap = glass.getHeap();
 
@@ -70,13 +67,13 @@ public class GameModel {
 
     }
 
-    public void updateScore(int points) {
+    private void updateScore(int points) {
         // Обновляем счет
         score += points;
     }
 
 
-    public boolean isGameOver() {
+    private boolean isGameOver() {
         boolean gameOver = glass.isOverflow();
         if (gameOver && gameOverWindow == null) {
             gameOverWindow = new GameOverWindow(score);
@@ -163,8 +160,8 @@ public class GameModel {
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setLayout(new FlowLayout());
 
-            scoreLabel = new JLabel("Score: " + score);
-            restartButton = new JButton("Restart");
+            scoreLabel = new JLabel("Итоговый счет: " + score);
+            restartButton = new JButton("Начать заново");
             restartButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
