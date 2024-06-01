@@ -16,7 +16,6 @@ public class GameFieldPanel extends JPanel implements KeyListener {
     private static final int CELL_SIZE = 25;
 
 
-
     // ----------------------------------------------------
 
     private static final Color BACKGROUND_COLOR = new Color(108, 88, 76);
@@ -27,23 +26,21 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         _model = model;
 
         int width = CELL_SIZE * _model.getGlass().getWidth();
-        int height =  CELL_SIZE * _model.getGlass().getHeight();
+        int height = CELL_SIZE * _model.getGlass().getHeight();
         setPreferredSize(new Dimension(width, height));
 
+        FigureObserver observer2 = new FigureObserver();
+        _model.addFigureGenerateListener(observer2);
         addKeyListener(this);
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        FigureObserver observer = new FigureObserver();
-        _model.getGlass().getFigure().addFigureActionListener(observer);
-        FigureObserver observer2 = new FigureObserver();
-        _model.getFactoryFigures().addFigureGenerateListener(observer2);
         int width = getWidth();
         int height = getHeight();
         g.setColor(BACKGROUND_COLOR);
-        g.fillRect(0, 4*CELL_SIZE, width, height);
+        g.fillRect(0, 4 * CELL_SIZE, width, height);
         drawGrid(g);
         drawFigure(g);
         drawShadowOfFigure(g);
@@ -60,12 +57,12 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         g.setColor(GRID_COLOR);
 
         for (int i = 0; i <= _model.getGlass().getWidth(); i++) {
-            int x =  CELL_SIZE * (i);
-            g.drawLine(x, 4*CELL_SIZE, x, height);
+            int x = CELL_SIZE * (i);
+            g.drawLine(x, 4 * CELL_SIZE, x, height);
         }
 
         for (int i = 4; i <= _model.getGlass().getHeight(); i++) {
-            int y =  CELL_SIZE * (i);
+            int y = CELL_SIZE * (i);
             g.drawLine(0, y, width, y);
         }
 
@@ -74,26 +71,29 @@ public class GameFieldPanel extends JPanel implements KeyListener {
 
     private void drawFigure(Graphics g) {
 
-        // Устанавливаем цвет для рисования фигуры
-        g.setColor(_model.getGlass().getFigure().getColor());
-        for (Cube cube : _model.getGlass().getFigure().getCubes()) {
-            int x = cube.getCoordX();
-            int y = cube.getCoordY();
-            if(y>=4) {
-                drawCube(g, x, y);
+        if (_model.getGlass().getFigure() != null) {
+            // Устанавливаем цвет для рисования фигуры
+            g.setColor(_model.getGlass().getFigure().getColor());
+            for (Cube cube : _model.getGlass().getFigure().getCubes()) {
+                int x = cube.getCoordX();
+                int y = cube.getCoordY();
+                if (y >= 4) {
+                    drawCube(g, x, y);
+                }
             }
         }
     }
 
     private void drawShadowOfFigure(Graphics g) {
+        if(_model.getGlass().getFigure() != null) {
 
-        // Устанавливаем цвет для рисования фигуры
-        g.setColor(_model.getGlass().getFigure().getShadow().getColor());
-        for (Cube cube : _model.getGlass().getFigure().getShadow().getCubesOfShadow()) {
-            int x = cube.getCoordX();
-            int y = cube.getCoordY();
-            if(y>=4) {
-                drawShadowCube(g, x, y);
+            g.setColor(_model.getGlass().getFigure().getShadow().getColor());
+            for (Cube cube : _model.getGlass().getFigure().getShadow().getCubesOfShadow()) {
+                int x = cube.getCoordX();
+                int y = cube.getCoordY();
+                if (y >= 4) {
+                    drawShadowCube(g, x, y);
+                }
             }
         }
     }
@@ -101,14 +101,14 @@ public class GameFieldPanel extends JPanel implements KeyListener {
     private void drawShadowCube(Graphics g, int x, int y) {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(3.0f));
-        g.drawLine(CELL_SIZE * x, CELL_SIZE * y, CELL_SIZE * (x+1), CELL_SIZE * y);
-        g.drawLine(CELL_SIZE * x, CELL_SIZE * y, CELL_SIZE * x, CELL_SIZE * (y+1));
-        g.drawLine(CELL_SIZE * x, CELL_SIZE * (y+1), CELL_SIZE * (x+1), CELL_SIZE * (y+1));
-        g.drawLine(CELL_SIZE * (x+1), CELL_SIZE * y, CELL_SIZE * (x+1), CELL_SIZE * (y+1));
+        g.drawLine(CELL_SIZE * x, CELL_SIZE * y, CELL_SIZE * (x + 1), CELL_SIZE * y);
+        g.drawLine(CELL_SIZE * x, CELL_SIZE * y, CELL_SIZE * x, CELL_SIZE * (y + 1));
+        g.drawLine(CELL_SIZE * x, CELL_SIZE * (y + 1), CELL_SIZE * (x + 1), CELL_SIZE * (y + 1));
+        g.drawLine(CELL_SIZE * (x + 1), CELL_SIZE * y, CELL_SIZE * (x + 1), CELL_SIZE * (y + 1));
     }
 
     private void drawCube(Graphics g, int x, int y) {
-        g.fillRect(CELL_SIZE * x,  CELL_SIZE * y, (CELL_SIZE-1), (CELL_SIZE-1));
+        g.fillRect(CELL_SIZE * x, CELL_SIZE * y, (CELL_SIZE - 1), (CELL_SIZE - 1));
     }
 
     private void drawHeap(Graphics g) {
@@ -135,7 +135,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
             Figure figure = _model.getGlass().getFigure();
             if (figure == null) return;
             _model.getGlass().getFigure().move(Direction.West); // Движение фигуры вправо
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN ) {
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             Figure figure = _model.getGlass().getFigure();
             if (figure == null) return;
             _model.getGlass().getFigure().move(Direction.South); // Ускорение падения фигуры
@@ -147,6 +147,7 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         repaint();
     }
 
+
     @Override
     public void keyReleased(KeyEvent e) {
 
@@ -157,19 +158,25 @@ public class GameFieldPanel extends JPanel implements KeyListener {
         @Override
         public void onFigureFell(FigureActionEvent e) {
 
+            if(_model.getGlass().getFigure() != null) {
+                repaint();
+            }
         }
 
         @Override
         public void onFigureMoveDown(FigureActionEvent e) {
-            Figure figure = _model.getGlass().getFigure();
-            if (figure != null){
+            if(_model.getGlass().getFigure() != null) {
                 repaint();
             }
         }
 
         @Override
         public void onFigureGenerate(FigureActionEvent e) {
-            repaint();
+            FigureObserver observer = new FigureObserver();
+            _model.getGlass().getFigure().addFigureActionListener(observer);
+            if(_model.getGlass().getFigure() != null) {
+                repaint();
+            }
         }
 
     }

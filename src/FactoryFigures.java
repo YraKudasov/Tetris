@@ -42,24 +42,8 @@ public class FactoryFigures {
 
     private int getRandomShape() {
         int[] shapes = {0, 1, 2, 3, 4, 5, 6};
-        fireFigureGenerate();
         return shapes[new Random().nextInt(shapes.length)];
     }
 
-    ArrayList<FigureActionListener> _listeners = new ArrayList<>();
 
-    public void addFigureGenerateListener(FigureActionListener l) {
-        _listeners.add(l);
-    }
-
-    public void removeFigureGenerateListener(FigureActionListener l) {
-        _listeners.remove(l);
-    }
-
-    protected void fireFigureGenerate() {
-        FigureActionEvent e = new FigureActionEvent(this);
-        for (FigureActionListener l : _listeners) {
-            l.onFigureGenerate(e);
-        }
-    }
 }

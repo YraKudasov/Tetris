@@ -5,6 +5,7 @@ import events.FigureActionEvent;
 import events.FigureActionListener;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Figure implements canMoveAndRotate {
     protected Glass glass;

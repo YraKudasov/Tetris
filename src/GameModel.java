@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,6 +50,7 @@ public class GameModel {
         // Инициируем генерацию фигур фабрикой фигур
         Figure figure = factoryFigures.createRandomFigure();
         glass.setFigure(figure);
+        fireFigureGenerate();
     }
 
     private void addFigureToHeap() {
@@ -64,6 +66,7 @@ public class GameModel {
 
         // Удаляем действующую фигуру из стакана
         glass.deleteFigure();
+        System.out.println("Фигура добавлена в кучу");
 
     }
 
@@ -95,6 +98,23 @@ public class GameModel {
         return score;
     }
 
+    ArrayList<FigureActionListener> _listeners = new ArrayList<>();
+
+    public void addFigureGenerateListener(FigureActionListener l) {
+        _listeners.add(l);
+    }
+
+    public void removeFigureGenerateListener(FigureActionListener l) {
+        _listeners.remove(l);
+    }
+
+    protected void fireFigureGenerate() {
+        // Создаем копию списка слушателей, чтобы избежать ошибки ConcurrentModificationException
+        List<FigureActionListener> listenersCopy = new ArrayList<>(_listeners);
+        for (FigureActionListener listener : listenersCopy) {
+            listener.onFigureGenerate(new FigureActionEvent(this)); // Исправлено здесь
+        }
+    }
 
     // Класс, который будет вызываться каждую секунду
     private class FallingFigureTask extends TimerTask {
@@ -107,7 +127,6 @@ public class GameModel {
                 // Фигура упала или отсутствует, останавливаем таймер и генерируем новую фигуру
                 timer.cancel(); // Останавливаем таймер
                 if (!isGameOver()) {
-
                     initiateFigureGeneration(); // Генерируем новую фигуру
                     glass.getFigure().addFigureActionListener(new FigureObserver());
                     timer = new Timer(); // Создаем новый таймер
@@ -156,7 +175,7 @@ public class GameModel {
         public GameOverWindow(int score) {
 
             displayed = true;
-            frame = new JFrame("Game Over");
+            frame = new JFrame("Игра окончена");
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setLayout(new FlowLayout());
 
