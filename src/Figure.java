@@ -91,9 +91,6 @@ public class Figure implements canMoveAndRotate {
                 }
             }
         }
-        if (countCubes != cubes.length - 1) {
-            throw new IllegalArgumentException("Figure can't rotate");
-        }
         return countCubes == cubes.length - 1;
     }
 
